@@ -3,15 +3,17 @@
 <head>
 <meta name='viewport' content='width=device-width,initial-scale=1.0,user-scalable=no'/>
 
-<title>Pan and Tilt ESP32-CAM  Elettronica In</title>
+<title>ESP32-CAM</title>
 
 <style> 
 
 
 
 #container {
-    width: 470px;
-    height: 49vh;
+    /*width: 470px;*/
+    /*height: 49vh;*/
+    max-width: 100vh;
+    min-height: 80vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -22,44 +24,11 @@
     z-index: 1;
 }
 
-
-
-/* Dimensioni e colore Cursore touch nei vari stati */
-#item {
-     width: 50px;
-     height: 50px;
-     background-color: rgb(320, 240, 99);
-     border: 10px solid rgba(136, 136, 136, .5);
-     border-radius: 50%;
-     touch-action: none;
-     user-select: none;
-	 position:relative;
-	 z-index:2;
+#sidebar {
+	position: fixed;
+    bottom: 10px;
+    width: 100%;
 }
-
-
-#item:active {
-     background-color: rgba(168, 218, 220, 1.00);
-}
-
-
-#item:hover {
-     cursor: pointer;
-     border-width: 20px;
-}
-
-
-
-
-/* Textarea per debug posizione cursore. Commentare per nascondere */
-#log_area {
-     position: fixed;
-     right: 0;
-     top: 0;
-}
-
-
-
 
 /* Contenitore immagine Streaming*/
 figure{
@@ -82,16 +51,11 @@ figure{
 
 figure img{
     display:block;
-    width:auto;
-    height:49vh;
+    max-width: 100%;
+    /*width:auto;*/
+    /*height:49vh;*/
     border-radius:4px;
 }
-
-
-
-
-
-
 
 
 body {
@@ -115,12 +79,11 @@ section.main {
 }
 
 
-
 #menu {
-	display: none;
+	/*display: none;*/
 	flex-wrap: nowrap;
-	min-width: 452px;
-	width: 370px;
+	min-width: 300px;
+	width: auto;
 	background: #363636;
 	padding: 8px;
 	border-radius: 4px;
@@ -135,22 +98,6 @@ section#buttons {
     justify-content: space-between
 }
 
-
-#nav-toggle {
-	cursor: pointer;
-	display: block
-}
-
-#nav-toggle-cb {
-	outline: 0;
-	opacity: 0;
-	width: 0;
-	height: 0
-}
-
-#nav-toggle-cb:checked+#menu {
-	display: flex
-}
 
 .input-group {
 	display: flex;
@@ -172,34 +119,6 @@ section#buttons {
 .range-max,.range-min {
 	display: inline-block;
 	padding: 0 5px
-}
-
-button {
-	display: block;
-	margin-left: 0px;
-	margin: 5px;
-	padding: 0 12px;
-	border: 0;
-	line-height: 28px;
-	cursor: pointer;
-	color: #fff;
-	background: #ff3034;
-	border-radius: 5px;
-	font-size: 16px;
-	outline: 0
-}
-
-button:hover {
-	background: #ff494d
-}
-
-button:active {
-	background: #f21c21
-}
-
-button.disabled {
-	cursor: default;
-	background: #a0a0a0
 }
 
 input[type=range] {
@@ -379,20 +298,13 @@ select {
 
 <body>
 
-<input type="textarea" id='log_area' disabled />
-
 <section class="main">
-
-    <div id="logo">
-                <label for="nav-toggle-cb" id="nav-toggle">&#9776;&nbsp;&nbsp;</label>
-            </div>
 			
     <div id="content">
 
         <div id='outerContainer'>
 
             <div id='container'>
-                <div id='item'></div>
                 <figure style="height:49vh">
                     <div id="stream-container" class="image-container">
                         <img id="stream" src="">
@@ -400,13 +312,8 @@ select {
                 </figure>
             </div>
 
-
             <div id="sidebar" >
-			
-                <input type="checkbox" id="nav-toggle-cb" >
-				
                 <nav id="menu">
-
                     <div class="input-group" id="flash-group">
                         <label for="flash">On Board LED</label>
                         <div class="switch">
@@ -414,40 +321,20 @@ select {
                             <label class="slider" for="flash"></label>
                         </div>
                     </div>
-
-                    <div class="input-group" id="vflip-group">
-                        <label for="checkbox1">checkbox</label>
-                        <div class="switch">
-                            <input id="checkbox1" type="checkbox" class="default-action" oninput="sentCheckbox(this.id,this.value);">
-                            <label class="slider" for="checkbox1"></label>
-                        </div>
-                    </div>
-
-                    <div class="input-group" id="saturation-group">
-                        <label for="saturation">Range</label>
-                        <div class="range-min">0</div>
-                        <input type="range" id="range1" min="0" max="100" value="0" class="default-action" oninput="sentRange(this.id,this.value);">
-                        <div class="range-max">100</div>
-                    </div>
-									
+				
 					<div class="input-group" id="wb_mode-group">
-						<label for="wb_mode">Select</label>
-						<select id="wb_mode" class="default-action" oninput="sentSelect(this.id,this.value);">
-							<option value="0" selected="selected">Auto</option>
-							<option value="1">Option1</option>
-							<option value="2">Option2</option>
-							<option value="3">Option3</option>
-							<option value="4">Option4</option>
+						<label for="framesize">Select FrameSize</label>
+						<select id="framesize" class="default-action" oninput="sentSelect(this.id,this.value);">
+							<option value="0">UXGA (1600 x 1200)</option>
+							<option value="1">SXGA (1280 x 1024)</option>
+							<option value="2" selected="selected">XGA  (1024 x 768)</option>
+							<option value="3">SVGA (800 x 600)</option>
+							<option value="4">VGA  (640 x 480)</option>
+							<option value="5">CIF  (352 x 288)</option>
+							<option value="6">QVGA (320 x 240)</option>
 						</select>
                      </div>
-									
-					<section id="buttons">
-                        <button id="btn1" onclick="setBotton(this.id);">Botton1</button>
-                        <button id="btn2" onclick="setBotton(this.id);">Botton2</button>   	                      						
-                    </section>
-								
                 </nav>
-
             </div>
 
         </div>
@@ -460,7 +347,6 @@ select {
 <script>
 
 /* SETTINGS: */
-const show_log_area = false;
 const ws_port = 82;
 const timeout1 =  5000;
 const timeout2 =  10000;
@@ -483,128 +369,23 @@ function startWebsocket() {
 
 	ws.onmessage = message => {
 		if (message.data instanceof Blob) {
-		var urlObject = URL.createObjectURL(message.data);
-		view.src = urlObject;
+			var urlObject = URL.createObjectURL(message.data);
+			view.src = urlObject;
 		}
 	};
 }
 
 
-var dragItem = document.querySelector('#item');
 var container = document.querySelector('#container');
 var containerWidth = container.offsetWidth;
 var containerHeight = container.offsetHeight;
-var maxDragHorizontal = containerWidth / 2;
-var maxDragVertical = containerHeight / 2;
-var log_area = document.querySelector('#log_area');
 
 var active = false;
-var currentX;
-var currentY;
-var initialX;
-var initialY;
-var xOffset = 0;
-var yOffset = 0;
 
 var lastText;
 var lastSend;
 var sendTimeout;
-var moving= false;
 var comand;
-
-container.addEventListener('touchstart', dragStart, false);
-container.addEventListener('touchend', dragEnd, false);
-container.addEventListener('touchmove', drag, false);
-container.addEventListener('mousedown', dragStart, false);
-container.addEventListener('mouseup', mouseup, false);
-container.addEventListener('mousemove', drag, false);
-
-
-log_area.value = 'width: ' + maxDragHorizontal + ' height: ' + maxDragVertical;
-
-
-
-if (!show_log_area){
-  log_area.style.visibility = 'hidden'; 
-}
-
-
-setInterval ("hide_spot();" , timeout2);
-
-
-function hide_spot(){
-	if (!moving){
-		dragItem.style.visibility = 'hidden'; 
-	}
-}
-
-
-
-function dragStart(e) {
-
-    //console.log('start');
-	
-    dragItem.style.visibility = 'visible'; 
-	
-    if (e.type === 'touchstart') {
-        initialX = e.touches[0].clientX - xOffset;
-        initialY = e.touches[0].clientY - yOffset;
-    } else {
-        initialX = e.clientX - xOffset;
-        initialY = e.clientY - yOffset;
-    }
-	
-    if (e.target === dragItem) {
-        active = true;
-    }
-	
-}
-
-
-
-function mouseup(e) {
-    initialX = currentX;
-    initialY = currentY;
-    active = false;	
-	moving = false;		
-}
-
-
-function dragEnd(e) {
-    initialX = currentX;
-    initialY = currentY;
-    active = false;		
-	moving = false;   	
-}
-
-
-function drag(e) {
-    if (active) {
-	
-        e.preventDefault();
-		
-        if (e.type === 'touchmove') {
-            currentX = e.touches[0].clientX - initialX;
-            currentY = e.touches[0].clientY - initialY;
-        } else {
-            currentX = e.clientX - initialX;
-            currentY = e.clientY - initialY;
-        }
-        xOffset = currentX;
-        yOffset = currentY;
-        if (Math.abs(currentY) < maxDragVertical && Math.abs(currentX) < maxDragHorizontal) {
-            setTranslate(currentX, currentY, dragItem);
-        }
-		
-		
-		if (show_log_area){
-         log_area.value = 'X: ' + currentX + ' Y: ' + currentY;
-        }
-		     	
-		moving = true;
-		
-    }
-}
 
 
 
@@ -632,50 +413,22 @@ function send(txt) {
 }
 
 
-
-function setTranslate(xPos, yPos, el) {
-    el.style.transform = 'translate3d(' + xPos + 'px, ' + yPos + 'px, 0)';
-    var panDegrees = xPos * 90 / maxDragHorizontal;
-    var tiltDegrees = yPos * 90 / maxDragVertical;
-	
-	comand ='{xy:[' + panDegrees + ',' + tiltDegrees +']}';
-	
-	send(comand);		
-}
-
-
-
-
 function sentCheckbox(id){
-var value;
+	var value;
 	var checkbox = document.getElementById(id);
 	if (checkbox.checked != true){
-	value = "0";
+		value = "0";
 	}else {
-	value = "1";
+		value = "1";
 	}
-	comand = '{pin:\'' +  id + '\', value:' + value + '}'; 
+	comand = '{checkbox:\'' +  id + '\', value:' + value + '}'; 
     ws.send(comand);
 }
 
-
-function sentRange(id,value){
-   comand = '{range:\'' +  id + '\', value:' + value + '}'; 
-   ws.send(comand);
-}
-
-
-function sentSelect(id,value){
+function sentSelect(id, value){
    comand = '{select:\'' +  id + '\', value:' + value + '}'; 
    ws.send(comand);
 }
-
-
-function setBotton(id){
-  comand = '{botton:\'' +  id + '\', value:1}'; 
-  ws.send(comand);
-}
-
 
 startWebsocket();
 
