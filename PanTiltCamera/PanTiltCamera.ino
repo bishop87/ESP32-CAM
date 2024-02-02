@@ -16,7 +16,10 @@ const char* ssid = "myTPLINK";
 const char* password = "MultiscanE220";
 const char*  mDNS_NAME = "esp32-cam";
 
-#define LED                4
+#define ONBOARD_LED       33
+#define FLASH_LED          4
+#define IR_LED            13
+
 #define PWDN_GPIO_NUM     32
 #define RESET_GPIO_NUM    -1
 #define XCLK_GPIO_NUM      0
@@ -47,15 +50,17 @@ void setup() {
   
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector 
   Serial.begin(115200);
-  pinMode(LED, OUTPUT);
-  pinMode(33, OUTPUT); //onboard led
-  digitalWrite(33, LOW); //accendo il led rosso
+  pinMode(FLASH_LED, OUTPUT);
+  pinMode(ONBOARD_LED, OUTPUT); //onboard led
+  pinMode(IR_LED, OUTPUT);
+
+  digitalWrite(IR_LED, LOW);
+  digitalWrite(ONBOARD_LED, LOW); //accendo il led rosso
   // Ai-Thinker: pins 2 and 12
-  ledcSetup(2, 50, 16); //channel, freq, resolution
-  ledcAttachPin(2, 2); // pin, channel
-  
-  ledcSetup(4, 50, 16);
-  ledcAttachPin(12, 4);
+  //ledcSetup(2, 50, 16); //channel, freq, resolution
+  //ledcAttachPin(2, 2); // pin, channel
+  //ledcSetup(4, 50, 16);
+  //ledcAttachPin(12, 4);
    
   camera_config_t config;
   
@@ -125,7 +130,7 @@ void setup() {
       ESP.restart();
     } 
   }
-  digitalWrite(33, HIGH); //spengo il led rosso
+  digitalWrite(ONBOARD_LED, HIGH); //spengo il led rosso
   Serial.println("");
   Serial.print("Connected to: ");
   Serial.print("http://");
@@ -203,7 +208,10 @@ void handle_message(WebsocketsMessage msg) {
     Serial.println(checkboxValue);
   
     if(strcmp(checkboxId, "flash")==0){
-      digitalWrite(LED, checkboxValue);   
+      digitalWrite(FLASH_LED, checkboxValue);   
+    }
+    if(strcmp(checkboxId, "irleds")==0){
+      digitalWrite(IR_LED, checkboxValue);
     }
      
   }
